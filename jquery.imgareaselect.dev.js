@@ -116,6 +116,9 @@ $.imgAreaSelect = function (img, options) {
         
         /* Document element */
         docElem = document.documentElement,
+
+        /* User agent */
+        ua = navigator.userAgent,
         
         /* Various helper variables used throughout the code */ 
         $p, d, i, o, w, h, adjusted;
@@ -409,7 +412,7 @@ $.imgAreaSelect = function (img, options) {
          * borderOpacity, borderColor1, and borderColor2 options (which are now
          * deprecated). Borders created with GIF background images are fine.
          */ 
-        if ($.browser.msie && $border.outerWidth() - $border.innerWidth() == 2) {
+        if (msie && $border.outerWidth() - $border.innerWidth() == 2) {
             $border.css('margin', 0);
             setTimeout(function () { $border.css('margin', 'auto'); }, 0);
         }
@@ -989,7 +992,7 @@ $.imgAreaSelect = function (img, options) {
         /* Append all the selection area elements to the container box */
         $box.append($area.add($border).add($areaOpera).add($handles));
 
-        if ($.browser.msie) {
+        if (msie) {
             if (o = ($outer.css('filter')||'').match(/opacity=(\d+)/))
                 $outer.css('opacity', o[1]/100);
             if (o = ($border.css('filter')||'').match(/opacity=(\d+)/))
@@ -1103,6 +1106,11 @@ $.imgAreaSelect = function (img, options) {
      */
     this.update = doUpdate;
 
+    /* Do the dreaded browser detection */
+    var msie = (/msie ([\w.]+)/i.exec(ua)||[])[1],
+        opera = /opera/i.test(ua),
+        safari = /webkit/i.test(ua) && !/chrome/i.test(ua);
+
     /* 
      * Traverse the image's parent elements (up to <body>) and find the
      * highest z-index
@@ -1126,14 +1134,14 @@ $.imgAreaSelect = function (img, options) {
      */
     zIndex = options.zIndex || zIndex;
 
-    if ($.browser.msie)
+    if (msie)
         $img.attr('unselectable', 'on');
 
     /*
      * In MSIE and WebKit, we need to use the keydown event instead of keypress
      */
-    $.imgAreaSelect.keyPress = $.browser.msie ||
-        $.browser.safari ? 'keydown' : 'keypress';
+    $.imgAreaSelect.keyPress = msie ||
+        safari ? 'keydown' : 'keypress';
 
     /*
      * There is a bug affecting the CSS cursor property in Opera (observed in
@@ -1142,7 +1150,7 @@ $.imgAreaSelect = function (img, options) {
      * event, we're adding an additional div to $box and we're going to toggle
      * it when mouse moves inside the selection area.
      */
-    if ($.browser.opera)
+    if (opera)
         $areaOpera = div().css({ width: '100%', height: '100%',
             position: 'absolute', zIndex: zIndex + 2 || 2 });
 
@@ -1171,7 +1179,7 @@ $.imgAreaSelect = function (img, options) {
      * attribute seems to trigger it. The check is for version 7 and above to
      * accommodate for MSIE 9 running in compatibility mode.
      */   
-   if (!imgLoaded && $.browser.msie && $.browser.version >= 7)
+   if (!imgLoaded && msie && version >= 7)
         img.src = img.src;
 };
 
